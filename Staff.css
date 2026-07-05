@@ -1,0 +1,345 @@
+
+        :root {
+            --primary-color: #1b4332; /* Deep Forest Green */
+            --secondary-color: #2d6a4f; /* Leaf Green */
+            --accent-color: #d4a373; /* Earth Brown / Sand */
+            --bg-light: #f4f7f4; /* Light Sage Tint */
+            --white: #ffffff;
+            --text-dark: #2b2d42;
+            --border-color: #e0e6e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Style */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--accent-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 span { color: var(--accent-color); }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            background-color: var(--white);
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .tab-link {
+            padding: 15px 25px;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .tab-link:hover, .tab-link.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            background-color: var(--white);
+        }
+
+        /* Main Content Container */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 25px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeIn 0.4s ease; }
+
+        /* KHAS UNTUK PANEL ANALYTICS: Set tinggi penuh skrin & halang scroll */
+        #panel-analytics.active {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 160px);
+            overflow: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Form & Cards Design */
+        .form-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; color: var(--primary-color); }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn:hover { background-color: var(--secondary-color); }
+        .btn-sm { padding: 6px 12px; font-size: 0.85rem; border-radius: 4px; }
+        .btn-accent { background-color: var(--accent-color); color: var(--primary-color); }
+
+        /* Tables */
+        .table-responsive { overflow-x: auto; background: var(--white); border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 14px 15px; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+        th { background-color: #f8faf8; color: var(--primary-color); font-weight: 600; }
+        
+        /* Baris Boleh Klik */
+        .clickable-row { cursor: pointer; transition: background-color 0.2s; }
+        .clickable-row:hover { background-color: #f0f5f1; }
+        
+        .status-badge { padding: 4px 8px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .status-paid { background-color: #e8f5e9; color: #2e7d32; }
+
+        /* --- MODAL POPUP STYLES --- */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 650px;
+            border-top: 5px solid var(--primary-color);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close-modal {
+            float: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+        .close-modal:hover { color: #000; }
+        .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .modal-item { font-size: 0.9rem; margin-bottom: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; }
+        .modal-item strong { color: var(--primary-color); }
+        
+        /* Gaya untuk senarai ahli kumpulan dalam modal */
+        .members-section {
+            grid-column: span 2;
+            background: #f9fbf9;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+        }
+        .members-table {
+            width: 100%;
+            margin-top: 8px;
+            border-collapse: collapse;
+        }
+        .members-table th, .members-table td {
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .members-table th {
+            background-color: #e8f0eb;
+            color: var(--primary-color);
+        }
+
+        /* --- SISTEM MATRIKS GRAF 1 PAGE (NO SCROLL) --- */
+        .charts-dashboard-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+        }
+        .chart-card {
+            background: var(--white);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-card h4 {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .chart-container { flex: 1; position: relative; width: 100%; height: 100%; }
+
+        .guide-status-box { padding: 12px; border-radius: 6px; margin-top: 10px; font-weight: 500; display: none; }
+        .guide-busy { background-color: #ffebee; color: #c62828; border-left: 4px solid #c62828; }
+        .guide-free { background-color: #e8f5e9; color: #2e7d32; border-left: 4px solid #2e7d32; }
+
+
+        /* Menetapkan latar belakang modal meliputi seluruh skrin */
+/* --- KEMAS KINI MODAL POPUP (CENTERED SCREEN) --- */
+.modal {
+    display: none; /* Disembunyikan secara default */
+    position: fixed; 
+    z-index: 2000; /* Nilai tinggi supaya tidak bertindih dengan elemen lain */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0, 0, 0, 0.55); /* Kesan gelap yang lebih jelas di belakang */
+    
+    /* Memastikan elemen anak (modal-content) duduk betul-betul di tengah skrin */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Gaya kotak kandungan di dalam modal */
+.modal-content {
+    background-color: var(--white);
+    padding: 25px;
+    border-radius: 12px;
+    width: 95%;
+    max-width: 750px; /* Ditambah lebar sedikit untuk memuatkan jadual peserta */
+    border-top: 5px solid var(--primary-color);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: zoomIn 0.25s ease-out; /* Animasi pop-up dari tengah */
+}
+
+/* Animasi muncul dari tengah skrin */
+@keyframes zoomIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Butang pangkah (X) untuk tutup modal */
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+    float: none; /* Dibuang float untuk serasi absolute position */
+}
+
+.close-modal:hover {
+    color: #000;
+}
+
+/* Memastikan susunan grid dalam modal nampak kemas */
+.modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+Sila pastikan kod ini ada untuk mengawal buka/tutup tab panel
+.tab-panel {
+    display: none;
+    background-color: var(--white);
+    padding: 25px;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.tab-panel.active {
+    display: block;
+}

@@ -10,7 +10,7 @@ const CURRENT_CUSTOMER_ID = sessionStorage.getItem("CUSTOMER_ID") ||
 // 2. SEKATAN KESELAMATAN: Jika tiada sesi login sah, tendang kembali ke LoginPage.html
 if (!CURRENT_CUSTOMER_ID) {
     alert("Sesi log masuk tidak ditemui! Sila log masuk terlebih dahulu.");
-    window.location.href = "LoginPage.html";
+    window.location.href = "index.html";
 }
 
 // Memuatkan data secara automatik apabila halaman selesai dibuka
@@ -433,6 +433,6 @@ function switchTab(tabId) {
 function logout() {
     if(confirm("Adakah anda pasti untuk log keluar?")) {
         sessionStorage.clear();
-        window.location.href = "LoginPage.html"; 
+        window.location.href = "index.html"; 
     }
 }

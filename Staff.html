@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - Merendang Hikers</title>
+    <link rel="stylesheet" href="../css/Staff.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+</head>
+<body>
+
+    <header>
+        <h1>MERENDANG <span>HIKERS</span> <small style="font-size:1rem; font-weight:normal; color:var(--accent-color);">| Staff Portal</small></h1>
+        <div class="user-profile">
+            <i class="fa-solid fa-user-shield fa-lg"></i>
+            <span>Staff Dashboard</span>
+            <button class="logout-btn" onclick="location.href='index.html'"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+    </header>
+
+    <nav class="nav-tabs">
+        <button id="tabBtn-bookings" class="tab-link active" onclick="switchTab('bookings')"><i class="fa-solid fa-book-bookmark"></i> Customer Bookings</button>
+        <button id="tabBtn-history" class="tab-link" onclick="switchTab('history')"><i class="fa-solid fa-clock-rotate-left"></i> Booking History</button> <button id="tabBtn-guides" class="tab-link" onclick="switchTab('guides')"><i class="fa-solid fa-user-compass"></i> Guide Management</button>
+        <button id="tabBtn-pricing" class="tab-link" onclick="switchTab('pricing')"><i class="fa-solid fa-tags"></i> Edit Prices & Trails</button>
+        <button id="tabBtn-analytics" class="tab-link" onclick="switchTab('analytics')"><i class="fa-solid fa-chart-line"></i> Sales Analytics</button>
+    </nav>
+
+    <div class="container">
+
+        <section id="panel-bookings" class="tab-panel active">
+        <h2><i class="fa-solid fa-list"></i> Customer Booking Log</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Booking Date</th>
+                        <th>Booking ID</th>
+                        <th>Customer ID</th>
+                        <th>Leader Name</th>
+                        <th>Destination</th>
+                        <th>Guide</th>
+                        <th>Trip Date</th>
+                        <th>Total Payment</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingTableBody"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="panel-history" class="tab-panel">
+        <h2><i class="fa-solid fa-clock-rotate-left"></i> Booking History</h2>
+        <p style="font-size:0.85rem; color:#666; margin-bottom:10px;">
+            <!-- <i class="fa-solid fa-circle-info"></i> Rekod di bawah adalah trip yang telah selesai berdasarkan tarikh trip yang telah berlalu. -->
+        </p>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Booking Date</th>
+                        <th>Booking ID</th>
+                        <th>Customer ID</th>
+                        <th>Leader Name</th>
+                        <th>Destination</th>
+                        <th>Guide</th>
+                        <th>Trip Date</th>
+                        <th>Total Payment</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody"></tbody>
+            </table>
+        </div>
+    </section>
+
+        <div id="detailsModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeDetailsModal()">&times;</span>
+                <h3 style="color:var(--primary-color); margin-bottom: 15px;">
+                    <i class="fa-solid fa-file-invoice"></i> Details Booking & Trip
+                </h3>
+                <div class="modal-grid" id="modalDataContent">
+                    </div>
+            </div>
+        </div>
+
+        <section id="panel-guides" class="tab-panel">
+            <h2><i class="fa-solid fa-calendar-days"></i> Live Guide Availability Tracker</h2>
+            <div class="form-card">
+                <div class="form-grid" style="align-items: end;">
+                    <div class="form-group">
+                        <label for="checkDateInput">Choose Hiking Date:</label>
+                        <input type="date" id="checkDateInput" value="2026-06-28">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn" onclick="checkGuideAvailability()"><i class="fa-solid fa-magnifying-glass"></i> Check Availability Status</button>
+                    </div>
+                </div>
+                <div id="guideStatusResult" class="guide-status-box guide-free"></div>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>Guide ID</th><th>Guide Name</th><th>Phone Contact</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="panel-pricing" class="tab-panel">
+            <h2><i class="fa-solid fa-sliders"></i> Modify Package Pricing & Equipment Rental Rates</h2>
+            <div class="form-card">
+                <h3><i class="fa-solid fa-mountain"></i> 1. Update Hiking Locations & Permits</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Select Trail Destination:</label>
+                        <select id="editLocationSelect" onchange="loadLocationPricing()"></select>
+
+                        <label>Price per Pax (RM)</label>
+                        <input type="number" id="editPricePax" step="0.01">
+                        
+                        <button id="btnSaveRates" onclick="saveLocationRates(event)" class="btn btn-primary" style="margin-top: 20px; display: block;">
+                            Save Location Rates
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="panel-analytics" class="tab-panel">
+        <h2><i class="fa-solid fa-chart-pie"></i> Executive Data Analytics Dashboards (Single Page View)</h2>
+        <div class="charts-dashboard-grid">
+            <div class="chart-card">
+                <h4><i class="fa-solid fa-map-marked-alt"></i> Top Destination Choices</h4>
+                <div class="chart-container"><canvas id="chartDestinations"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h4><i class="fa-solid fa-user-ninja"></i> Guide Task Allocation Frequency</h4>
+                <div class="chart-container"><canvas id="chartGuides"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h4><i class="fa-solid fa-credit-card"></i> Preferred Payment Methods</h4>
+                <div class="chart-container"><canvas id="chartPayments"></canvas></div>
+            </div>
+            
+            <div class="chart-card">
+                <h4><i class="fa-solid fa-money-bill-trend-up"></i> Monthly Gross Sales Performance</h4>
+                
+                <div class="filter-container" style="margin: 10px 0; font-size: 0.9rem;">
+                    <label for="filterSalesYear"><strong>Choose Year:</strong></label>
+                    <select id="filterSalesYear" onchange="updateMonthlySalesChart()" style="padding: 4px px; margin-left: 4px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer;">
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                </div>
+
+                <div class="chart-container"><canvas id="chartSales"></canvas></div>
+            </div>
+        </div>
+    </section>
+    </div>
+
+<script src="../script/staff.js"></script>    
+</body>

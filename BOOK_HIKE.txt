@@ -1,0 +1,236 @@
+CREATE TABLE CUSTOMER (
+    customer_id VARCHAR2(10) PRIMARY KEY,
+    customer_name VARCHAR2(100) NOT NULL,
+    customer_phone VARCHAR2(20) NOT NULL,
+    customer_email VARCHAR2(100) NOT NULL UNIQUE,
+    customer_pass VARCHAR2(50) NOT NULL
+);
+
+CREATE TABLE STAFF (
+    staff_id VARCHAR2(10) PRIMARY KEY,
+    staff_name VARCHAR2(100) NOT NULL,
+    staff_phone VARCHAR2(20) NOT NULL,
+    staff_email VARCHAR2(100) NOT NULL UNIQUE,
+    staff_pass VARCHAR2(50) NOT NULL
+);
+
+CREATE TABLE LOCATION_HIKING (
+    location_id VARCHAR2(10) PRIMARY KEY,
+    location_name VARCHAR2(100) NOT NULL,
+    price_per_pax NUMBER(10, 2) NOT NULL
+);
+
+CREATE TABLE GUIDE (
+    guide_id VARCHAR2(10) PRIMARY KEY,
+    guide_name VARCHAR2(100) NOT NULL,
+    guide_phone VARCHAR2(20) NOT NULL,
+    guide_email VARCHAR2(100) NOT NULL UNIQUE,
+    guide_pass VARCHAR2(50) NOT NULL
+);
+
+CREATE TABLE PAYMENT (
+    payment_id VARCHAR2(10) PRIMARY KEY,
+    payment_method VARCHAR2(50) NOT NULL CHECK (payment_method IN ('QR', 'TnG', 'ONLINE TRANSFER')),
+    total_amount NUMBER(10, 2) NOT NULL,
+    payment_date DATE NOT NULL,
+    guide_fee NUMBER(10, 2) DEFAULT 50.00 NOT NULL
+);
+
+CREATE TABLE BOOKING (
+    booking_id VARCHAR2(10) PRIMARY KEY,
+    customer_id VARCHAR2(10) NOT NULL,
+    staff_id VARCHAR2(10) NOT NULL,
+    booking_date DATE NOT NULL,
+    CONSTRAINT fk_booking_customer FOREIGN KEY (customer_id) REFERENCES CUSTOMER(customer_id),
+    CONSTRAINT fk_booking_staff FOREIGN KEY (staff_id) REFERENCES STAFF(staff_id)
+);
+
+CREATE TABLE BOOKING_DETAIL (
+    booking_id VARCHAR2(10) NOT NULL,
+    location_id VARCHAR2(10) NOT NULL,
+    payment_id VARCHAR2(10) NOT NULL,
+    guide_id VARCHAR2(10) NOT NULL,
+    pax NUMBER NOT NULL,
+    subtotal NUMBER(10, 2) NOT NULL,
+    duration_day NUMBER NOT NULL CHECK (duration_day BETWEEN 1 AND 7),
+    permit_fee NUMBER(10, 2) DEFAULT 50.00 NOT NULL,
+    equipment_fee NUMBER(10, 2),          
+    emergency_contact VARCHAR2(50),       
+    PRIMARY KEY (booking_id, location_id),
+    CONSTRAINT fk_detail_booking FOREIGN KEY (booking_id) REFERENCES BOOKING(booking_id),
+    CONSTRAINT fk_detail_location FOREIGN KEY (location_id) REFERENCES LOCATION_HIKING(location_id),
+    CONSTRAINT fk_detail_payment FOREIGN KEY (payment_id) REFERENCES PAYMENT(payment_id),
+    CONSTRAINT fk_detail_guide FOREIGN KEY (guide_id) REFERENCES GUIDE(guide_id)
+);
+
+
+-- ==========================================
+-- 2. SEQUENCE & AUTOMATIC TRIGGERS
+-- ==========================================
+
+CREATE SEQUENCE seq_customer_id START WITH 1 INCREMENT BY 1;
+/
+CREATE OR REPLACE TRIGGER trg_customer_id
+BEFORE INSERT ON CUSTOMER FOR EACH ROW
+BEGIN
+    IF :NEW.customer_id IS NULL THEN
+        :NEW.customer_id := 'C' || LPAD(seq_customer_id.NEXTVAL, 3, '0');
+    END IF;
+END;
+/
+
+CREATE SEQUENCE seq_staff_id START WITH 1 INCREMENT BY 1;
+/
+CREATE OR REPLACE TRIGGER trg_staff_id
+BEFORE INSERT ON STAFF FOR EACH ROW
+BEGIN
+    IF :NEW.staff_id IS NULL THEN
+        :NEW.staff_id := 'S' || LPAD(seq_staff_id.NEXTVAL, 3, '0');
+    END IF;
+END;
+/
+
+CREATE SEQUENCE seq_guide_id START WITH 1 INCREMENT BY 1;
+/
+CREATE OR REPLACE TRIGGER trg_guide_id
+BEFORE INSERT ON GUIDE FOR EACH ROW
+BEGIN
+    IF :NEW.guide_id IS NULL THEN
+        :NEW.guide_id := 'G' || LPAD(seq_guide_id.NEXTVAL, 3, '0');
+    END IF;
+END;
+/
+
+CREATE SEQUENCE seq_location_id START WITH 1 INCREMENT BY 1;
+/
+CREATE OR REPLACE TRIGGER trg_location_id
+BEFORE INSERT ON LOCATION_HIKING FOR EACH ROW
+BEGIN
+    IF :NEW.location_id IS NULL THEN
+        :NEW.location_id := 'L' || LPAD(seq_location_id.NEXTVAL, 3, '0');
+    END IF;
+END;
+/
+
+CREATE SEQUENCE seq_payment_id START WITH 1 INCREMENT BY 1;
+/
+CREATE OR REPLACE TRIGGER trg_payment_id
+BEFORE INSERT ON PAYMENT FOR EACH ROW
+BEGIN
+    IF :NEW.payment_id IS NULL THEN
+        :NEW.payment_id := 'P' || LPAD(seq_payment_id.NEXTVAL, 3, '0');
+    END IF;
+END;
+/
+
+CREATE SEQUENCE seq_booking_id START WITH 1 INCREMENT BY 1;
+/
+CREATE OR REPLACE TRIGGER trg_booking_id
+BEFORE INSERT ON BOOKING FOR EACH ROW
+BEGIN
+    IF :NEW.booking_id IS NULL THEN
+        :NEW.booking_id := 'B' || LPAD(seq_booking_id.NEXTVAL, 3, '0');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_booking_detail_fee
+BEFORE INSERT ON BOOKING_DETAIL FOR EACH ROW
+BEGIN
+    IF :NEW.equipment_fee IS NULL THEN
+        :NEW.equipment_fee := :NEW.pax * 40;
+    END IF;
+END;
+/
+
+
+-- ==========================================
+-- 3. MEMASUKKAN DATA (DATA INSERTION)
+-- ==========================================
+
+-- Data Pelanggan (CUSTOMER)
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('AMNI HANNAH ABDUL HALIM', '012-3456789', 'amni.hannah@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('MUHAMMAD IRFAN MUQRI ABDUL MANAF', '013-9876543', 'irfan.muqri@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('AHMAD DANISH AHMAD YAZID', '017-1234567', 'danish.yazid@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('SHAHIRUL FIKRI AMAN SHAH', '019-8765432', 'shahirul.fikri@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('ANIS HUMAIRA AZUAR SHAHNAZ', '011-2345678', 'anis.humaira@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('MOHAMAD SYAHRIL HAIQAL HAMZAH', '014-7654321', 'syahril.haiqal@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('MUHAMMAD IQRAM ALIFF ISMAIL', '016-3456789', 'iqram.aliff@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('AMAR HAFIZ KAMALUDIN', '018-9876543', 'amar.hafiz@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('MUHAMMAD HARITH SAFWAN MD ILYAS', '012-5554433', 'harith.safwan@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('NURFATEN NABILAH MOHAMAD NAZRI', '013-4443322', 'nurfaten.nabilah@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('MUHAMMAD RAYHAN ARIFF MOHAMAD SHAHRUL', '017-3332211', 'rayhan.ariff@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('MUHAMMAD YAMIN NABHAN MOHAMAD YUSOFF', '019-2221100', 'yamin.nabhan@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('MUHAMMAD SYUKRI MOHAMMAD WEDDAN', '011-9998887', 'syukri.weddan@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('IMRAN MUZAKKIR MOHD ISRAM', '014-8887776', 'imran.muzakkir@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('NOR AFIQAH NABILA MOHD NASIR', '016-7776665', 'afiqah.nabila@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('NUR INSYIRAH MOHD SHUKRI', '018-6665554', 'insyirah.shukri@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('MUHAMAD ZULHAIRI MOHD ZAWAWI', '012-1112233', 'zulhairi.zawawi@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('MOHAMAD ADIB FAWZAN MOHD ZUHAIRI', '013-2223344', 'adib.fawzan@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('MUHAMMAD AQIL HUSAINY MUHAMMAD ZAIDI', '017-4445566', 'aqil.husainy@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('AQIL HILMI NOR YAZID', '019-5556677', 'aqil.hilmi@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('MUHAMMAD FARIS SHAHARIMANADLI', '011-6667788', 'faris.shahariman@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('SHAHRUL AIMAN SHAHRUL NIZAM', '014-7778899', 'shahrul.aiman@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('SITI NUR FARAHIN SHEIKH MOHD FU''AD', '016-8889900', 'farahin.sheikh@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('MUHAMMAD AMMAR SUHAIMI', '018-1237890', 'ammar.suhaimi@gmail.com', 'pass123');
+INSERT INTO CUSTOMER (customer_name, customer_phone, customer_email, customer_pass) VALUES ('ZUHAILI ZAKWAN ZULHADI', '012-9873210', 'zuhaili.zakwan@gmail.com', 'pass123');
+
+-- Data Staf (STAFF)
+INSERT INTO STAFF (staff_name, staff_phone, staff_email, staff_pass) VALUES ('MOHD FIRDAUS BIN HASAN', '012-7654321', 'firdaus.hasan@merendang.com', 'staffpass');
+INSERT INTO STAFF (staff_name, staff_phone, staff_email, staff_pass) VALUES ('MUHAMMAD FUAD BIN HASAN', '013-1234567', 'fuad.hasan@merendang.com', 'staffpass');
+INSERT INTO STAFF (staff_name, staff_phone, staff_email, staff_pass) VALUES ('MUHAMMAD FIRDAUS BIN MEHAT', '017-8901234', 'firdaus.mehat@merendang.com', 'staffpass');
+INSERT INTO STAFF (staff_name, staff_phone, staff_email, staff_pass) VALUES ('SYARFA SYAHIRAH BINTI MOHD FADIL', '019-4567890', 'syarfa.syahirah@merendang.com', 'staffpass');
+INSERT INTO STAFF (staff_name, staff_phone, staff_email, staff_pass) VALUES ('NOR IZANPUTRA BIN SAAD', '011-3456789', 'izanputra.saad@merendang.com', 'staffpass');
+INSERT INTO STAFF (staff_name, staff_phone, staff_email, staff_pass) VALUES ('YUSHAIZAN BINTI MD YUSUF', '014-9876543', 'yushaizan.yusuf@merendang.com', 'staffpass');
+INSERT INTO STAFF (staff_name, staff_phone, staff_email, staff_pass) VALUES ('MUHAMMAD FAHMIE BIN MOHD FAZLAN', '016-1122334', 'fahmie.fazlan@merendang.com', 'staffpass');
+INSERT INTO STAFF (staff_name, staff_phone, staff_email, staff_pass) VALUES ('MOHD NIZAM BIN ANUAR', '018-4455667', 'nizam.anuar@merendang.com', 'staffpass');
+INSERT INTO STAFF (staff_name, staff_phone, staff_email, staff_pass) VALUES ('ALI BIN ABU', '012-8899001', 'ali.abu@merendang.com', 'staffpass');
+INSERT INTO STAFF (staff_name, staff_phone, staff_email, staff_pass) VALUES ('AHMAD NAZHAN BIN MAMAT', '013-5566778', 'nazhan.mamat@merendang.com', 'staffpass');
+
+-- Data Lokasi (LOCATION_HIKING)
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Gunung Baling', 30.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Gunung Pulai', 40.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Gunung Jerai', 70.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Air Terjun Perangin', 150.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Pintu Wang Gunung', 90.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Bukit Chabang', 170.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Bukit Jernih', 45.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Bukit Pelarit', 35.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Pulau Jerejak', 200.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Unicorn Trail', 180.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Gunung Bintang', 47.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Gunung Silipat', 35.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Gunung Alai', 125.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Gunung Kerunai', 25.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Bukit Berekeh', 15.00);
+INSERT INTO LOCATION_HIKING (location_name, price_per_pax) VALUES ('Gunung Irau', 25.00);
+
+-- Data Penunjuk Arah (GUIDE)
+INSERT INTO GUIDE (guide_name, guide_phone, guide_email, guide_pass) VALUES ('KHAIRUL AMRI', '012-9991112', 'khairul.amri@merendang.com', 'guide123');
+INSERT INTO GUIDE (guide_name, guide_phone, guide_email, guide_pass) VALUES ('FAIZAL TAHIR', '017-8882223', 'faizal.tahir@merendang.com', 'guide123');
+INSERT INTO GUIDE (guide_name, guide_phone, guide_email, guide_pass) VALUES ('AZLAN SHAH', '013-7773334', 'azlan.shah@merendang.com', 'guide123');
+INSERT INTO GUIDE (guide_name, guide_phone, guide_email, guide_pass) VALUES ('SHAMSUL GHAU GHAU', '019-6664445', 'shamsul.ghau@merendang.com', 'guide123');
+INSERT INTO GUIDE (guide_name, guide_phone, guide_email, guide_pass) VALUES ('ZUL ARIFFIN', '011-5555556', 'zul.ariffin@merendang.com', 'guide123');
+INSERT INTO GUIDE (guide_name, guide_phone, guide_email, guide_pass) VALUES ('MUHAMMAD ANAS BIN RAMLI', '014-2233445', 'anas.ramli@merendang.com', 'guide123');
+INSERT INTO GUIDE (guide_name, guide_phone, guide_email, guide_pass) VALUES ('NURUL ASYIKIN BINTI IDRIS', '016-5544332', 'asyikin.idris@merendang.com', 'guide123');
+INSERT INTO GUIDE (guide_name, guide_phone, guide_email, guide_pass) VALUES ('MOHD SYAHMI BIN ZULKIFLI', '018-7766554', 'syahmi.zul@merendang.com', 'guide123');
+INSERT INTO GUIDE (guide_name, guide_phone, guide_email, guide_pass) VALUES ('WAN AZIZUL BIN WAN HAMID', '013-1122998', 'wan.azizul@merendang.com', 'guide123');
+INSERT INTO GUIDE (guide_name, guide_phone, guide_email, guide_pass) VALUES ('SITI NURHALIZA BINTI ARIS', '011-8877665', 'siti.aris@merendang.com', 'guide123');
+
+-- Tempahan 1 
+INSERT INTO BOOKING (customer_id, staff_id, booking_date) VALUES ('C001', 'S001', TO_DATE('2024-02-15', 'YYYY-MM-DD'));
+INSERT INTO PAYMENT (payment_method, total_amount, payment_date, guide_fee) VALUES ('QR', 270.00, TO_DATE('2024-02-15', 'YYYY-MM-DD'), 50.00);
+
+-- Memasukkan butiran tempahan (BOOKING_DETAIL)
+INSERT INTO BOOKING_DETAIL (booking_id, location_id, payment_id, guide_id, pax, subtotal, duration_day, permit_fee, emergency_contact) 
+VALUES ('B001', 'L001', 'P001', 'G001', 4, 170.00, 2, 50.00, '012-9998888');
+
+-- Tempahan 2 
+INSERT INTO BOOKING (customer_id, staff_id, booking_date) VALUES ('C005', 'S003', TO_DATE('2024-05-20', 'YYYY-MM-DD'));
+INSERT INTO PAYMENT (payment_method, total_amount, payment_date, guide_fee) VALUES ('TnG', 240.00, TO_DATE('2024-05-20', 'YYYY-MM-DD'), 50.00);
+
+-- Memasukkan butiran tempahan kedua (BOOKING_DETAIL)
+INSERT INTO BOOKING_DETAIL (booking_id, location_id, payment_id, guide_id, pax, subtotal, duration_day, permit_fee, emergency_contact) 
+VALUES ('B002', 'L003', 'P002', 'G006', 2, 190.00, 1, 50.00, '013-5554444');
+
+COMMIT;

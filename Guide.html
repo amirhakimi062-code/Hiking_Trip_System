@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide Dashboard - Merendang Hikers</title>
+    <link rel="stylesheet" href="../css/Guide.css">
+    
+</head>
+<body>
+
+    <header>
+        <h1>MERENDANG <span>HIKERS</span> <small style="font-size:1rem; font-weight:normal; color:var(--accent-color);">| Guide Portal</small></h1>
+        <div class="user-profile">
+            <i class="fa-solid fa-user-compass fa-lg"></i>
+            <span>Guide Dashboard</span>
+            <button class="logout-btn" onclick="location.href='index.html'"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div class="left-column">
+            
+            <div class="form-card">
+                <h2><i class="fa-solid fa-calendar-days"></i> Monthly Duty Calendar</h2>
+                
+                <div class="duty-counter" id="duty-counter-box">
+                    <i class="fa-solid fa-business-time"></i> Total Duty Days This Month: <span id="total-duty-days">0</span> Days
+                </div>
+
+                <div class="calendar-box">
+                    <div class="calendar-header">
+                        <!-- <button class="nav-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button> -->
+                        <button class="nav-btn" onclick="changeMonth(-1)">&lt;</button>
+                        <div class="calendar-selectors">
+                            <select id="select-month" onchange="jumpToMonthYear()"></select>
+                            <select id="select-year" onchange="jumpToMonthYear()"></select>
+                        </div>
+                        
+                        <!-- <button class="nav-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button> -->
+                        <button class="nav-btn" onclick="changeMonth(1)">&gt;</button>
+                    </div>
+                    <div class="calendar-days" id="calendar-days-grid">
+                        </div>
+                </div>
+                <p style="font-size:0.8rem; color:#666; margin-top:10px; text-align:center;"><i class="fa-solid fa-circle" style="color:var(--secondary-color)"></i> Green highlighted dates indicate active guiding shifts.</p>
+            </div>
+
+            <div class="form-card">
+                <h2><i class="fa-solid fa-route"></i> My Assigned Trips</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Trip Date Range</th>
+                                <th>Booking ID</th>
+                                <th>Destination</th>
+                                <th>Group Leader</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assigned-trips-list">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-column">
+            
+            <div class="form-card">
+                <h2><i class="fa-solid fa-clipboard-check"></i> Booking Details & Live Attendance</h2>
+                
+                <div class="trip-brief-box">
+                    <p><strong>Active Booking ID:</strong> <span id="trip-id">-</span></p>
+                    <p><strong>Destination Point:</strong> <span id="trip-dest">-</span></p>
+                    <p><strong>Assigned Shift Date:</strong> <span id="trip-date" style="color:var(--secondary-color); font-weight:bold;">-</span></p>
+                    <p><strong>Trip Duration:</strong> <span id="trip-duration" style="color:#2d6a4f; font-weight:bold;">-</span></p>
+                    <p><strong>Group Total Equipment:</strong> <span id="trip-equip" style="color:#b57c43;">-</span></p>
+                </div>
+
+                <p style="font-size: 0.8rem; color:#666; margin-bottom: 12px;">
+                    <i class="fa-solid fa-circle-info"></i> Tick the boxes below as hikers arrive safely at the checkpoint.
+                </p>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 70px; text-align: center;">Present</th>
+                                <th>Hiker Full Name</th>
+                                <th>Emergency Contact (Leader Only)</th>
+                                <th>Equipment Rented</th>
+                                <th>Role</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-list-table">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #888; padding: 20px;">Please select a trip from the calendar or list to view hikers.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <button class="btn btn-success" onclick="alert('Attendance manifest saved successfully! Synchronized with Staff and Customer portals.')">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Submit & Save Trip Attendance
+                </button>
+            </div>
+            
+        </div>
+    </div>
+
+<script src="../script/guide.js"></script>
+</body>
